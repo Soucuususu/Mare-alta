@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#071a2b">
+  <title>Maré Alta — Pesca & Exploração</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div id="loading" class="loading">
+    <div class="loading-mark">MA</div>
+    <div class="loading-title">MARÉ ALTA</div>
+    <div class="loading-sub">Preparando o oceano...</div>
+    <div class="loading-track"><span></span></div>
+  </div>
+
+  <canvas id="game"></canvas>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-icon">MA</div>
+      <div><strong>MARÉ ALTA</strong><small>PESCA & EXPLORAÇÃO</small></div>
+    </div>
+    <div class="top-stats">
+      <div class="stat"><span class="stat-label">CARTEIRA</span><strong id="money">₡ 0</strong></div>
+      <div class="stat"><span class="stat-label">CLIMA</span><strong id="weather">Ensolarado</strong></div>
+      <div class="stat"><span class="stat-label">LOCAL</span><strong id="location">Enseada</strong></div>
+    </div>
+    <button class="icon-btn" id="menuBtn" aria-label="Abrir menu">☰</button>
+  </header>
+
+  <div class="crosshair"><span></span><i></i></div>
+  <div class="center-message" id="centerMessage"></div>
+
+  <section class="quest-card">
+    <div class="quest-eyebrow"><span class="live-dot"></span> SUA PRIMEIRA EXPEDIÇÃO</div>
+    <h2>Conheça a enseada</h2>
+    <p>Pesque, descubra espécies e venda sua captura no cais.</p>
+    <div class="quest-progress"><span id="questProgress"></span></div>
+    <small id="questText">0 / 3 peixes pescados</small>
+  </section>
+
+  <div class="interaction-hint" id="hint">Explore a ilha e encontre um bom lugar para pescar.</div>
+
+  <aside class="inventory-panel" id="inventoryPanel">
+    <div class="panel-heading">
+      <div><small>SEU EQUIPAMENTO</small><h3>Bolsa de pesca</h3></div>
+      <button class="close-btn" id="closeInventory">×</button>
+    </div>
+    <div class="inventory-summary"><span>CAPTURAS</span><strong id="fishCount">0 / 20</strong></div>
+    <div class="fish-list" id="fishList"><div class="empty-state">Sua bolsa está vazia.<br>O oceano está esperando.</div></div>
+    <button class="primary-btn" id="sellBtn">Vender todos os peixes <span id="sellValue">₡ 0</span></button>
+  </aside>
+
+  <aside class="shop-panel" id="shopPanel">
+    <div class="panel-heading">
+      <div><small>LOJA DO CAIS</small><h3>Equipamentos</h3></div>
+      <button class="close-btn" id="closeShop">×</button>
+    </div>
+    <div class="shop-item">
+      <div class="item-icon">🎣</div>
+      <div class="item-info"><strong>Vara de fibra</strong><p>Uma vara mais estável. Aumenta um pouco a chance de espécies raras.</p><small>Já equipada</small></div>
+      <span class="owned">ATUAL</span>
+    </div>
+    <div class="shop-item">
+      <div class="item-icon">🧺</div>
+      <div class="item-info"><strong>Cesta reforçada</strong><p>Amplia sua bolsa de 20 para 35 peixes.</p><small>Melhoria permanente nesta sessão</small></div>
+      <button class="buy-btn" id="upgradeBag">₡ 250</button>
+    </div>
+    <div class="shop-item">
+      <div class="item-icon">🪱</div>
+      <div class="item-info"><strong>Isca premium</strong><p>Melhora a chance de capturar peixes incomuns e raros.</p><small id="baitStatus">Não comprada</small></div>
+      <button class="buy-btn" id="buyBait">₡ 180</button>
+    </div>
+    <p class="shop-note">As compras ficam salvas neste navegador.</p>
+  </aside>
+
+  <aside class="menu-panel" id="menuPanel">
+    <div class="panel-heading"><div><small>MARÉ ALTA</small><h3>Pausa da expedição</h3></div><button class="close-btn" id="closeMenu">×</button></div>
+    <button class="menu-row" id="openBag">🎒 <span>Bolsa de pesca</span><b>›</b></button>
+    <button class="menu-row" id="openStore">⚓ <span>Loja do cais</span><b>›</b></button>
+    <div class="menu-info"><strong>Controles</strong><p><b>PC:</b> WASD para andar, mouse para olhar, E para interagir, Espaço para pular.</p><p><b>Celular:</b> use o controle virtual e os botões na tela.</p></div>
+    <button class="secondary-btn" id="resetBtn">Reiniciar expedição</button>
+  </aside>
+
+  <div class="toast" id="toast"></div>
+
+  <div class="mobile-controls" id="mobileControls">
+    <div class="joystick" id="joystick"><div class="joy-knob" id="joyKnob"></div></div>
+    <div class="mobile-actions">
+      <button id="jumpBtn" class="action-btn jump-btn">↑<small>PULAR</small></button>
+      <button id="interactBtn" class="action-btn interact-btn">E<small>USAR</small></button>
+    </div>
+  </div>
+
+  <div class="bottom-hud">
+    <div class="tool-slot"><span class="tool-icon">🎣</span><div><small>EQUIPADO</small><strong>Vara de pesca</strong></div><kbd>1</kbd></div>
+    <button class="hud-button" id="fishBtn"><span class="cast-icon">⌁</span><span><strong>Pescar</strong><small id="fishBtnSub">Encontre a água</small></span><kbd>F</kbd></button>
+    <button class="hud-button" id="bagBtn"><span class="hud-emoji">🎒</span><span><strong>Bolsa</strong><small id="bagBtnSub">0 capturas</small></span><kbd>B</kbd></button>
+  </div>
+
+  <div class="fishing-overlay" id="fishingOverlay">
+    <div class="fishing-card">
+      <div class="fishing-top"><span class="live-dot"></span> LINHA NA ÁGUA <span id="fishingTimer">AGUARDE...</span></div>
+      <h2 id="fishingTitle">O peixe está mordendo?</h2>
+      <p id="fishingDesc">Fique atento. Quando a boia afundar, recolha a linha.</p>
+      <div class="bite-indicator" id="biteIndicator"><span></span><span></span><span></span></div>
+      <button class="primary-btn" id="reelBtn" disabled>Recolher linha <kbd>ESPAÇO</kbd></button>
+      <div class="fishing-tip" id="fishingTip">Dica: o tempo certo faz a diferença.</div>
+    </div>
+  </div>
+
+  <div class="catch-overlay" id="catchOverlay">
+    <div class="catch-card">
+      <div class="catch-glow"></div>
+      <div class="catch-label">NOVA CAPTURA</div>
+      <div class="catch-emoji" id="catchEmoji">🐟</div>
+      <h2 id="catchName">Robalo</h2>
+      <div class="catch-rarity" id="catchRarity">COMUM</div>
+      <div class="catch-details"><span>PESO<strong id="catchWeight">1,2 kg</strong></span><span>VALOR<strong id="catchPrice">₡ 12</strong></span></div>
+      <button class="primary-btn" id="keepCatch">Guardar na bolsa</button>
+    </div>
+  </div>
+
+  <div class="mobile-tip" id="mobileTip">Arraste o controle para andar · Toque em Pescar perto da água</div>
+
+  <script type="module" src="./game.js"></script>
+</body>
+</html>
